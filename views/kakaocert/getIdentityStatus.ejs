@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <title>Barocert Node Example</title>
+</head>
+
+<body>
+  <div id="content">
+    <p class="heading1">Response</p>
+    <br />
+    <fieldset class="fieldset1">
+      <legend>
+        <%= path %>
+      </legend>
+      <ul>
+        <li>접수 아이디 (ReceiptID) : <%= result.receiptID %></li>
+        <li>이용기관 코드 (ClientCode) : <%= result.clientCode %></li>
+        <li>상태 (State) : <%= result.state %></li>
+        <li>서명요청일시 (RequestDT) : <%= result.requestDT %></li>
+        <li>서명조회일시 (ViewDT) : <%= result.viewDT %></li>
+        <li>서명완료일시 (CompleteDT) : <%= result.completeDT %></li>
+        <li>서명만료일시 (ExpireDT) : <%= result.expireDT %></li>
+        <li>서명검증일시 (VerifyDT) : <%= result.verifyDT %></li>
+      </ul>
+    </fieldset>
+  </div>
+</body>
+
+</html>
