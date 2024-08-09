@@ -13,6 +13,7 @@ var routes = require("./routes/index");
 var kakaocert = require("./routes/kakaocert");
 var navercert = require("./routes/navercert");
 var passcert = require("./routes/passcert");
+var pg = require("./routes/pg");
 
 var app = express();
 app.use(cors());
@@ -35,6 +36,7 @@ app.use("/", routes);
 app.use("/KakaocertService", kakaocert);
 app.use("/NavercertService", navercert);
 app.use("/PasscertService", passcert);
+app.use("/payment", pg);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
