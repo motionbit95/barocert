@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const path = require("path");
+const firebase = require("./db");
+const db = firebase.firestore();
 
 var router = express.Router();
 
@@ -12,10 +14,18 @@ const merchantID = "DMGS00001m"; // 상점아이디
 // Function to get current date and time in yyyyMMddHHmmss format
 function getyyyyMMddHHmmss() {
   const now = new Date();
-  const yyyyMMddHHmmss = now
-    .toISOString()
-    .replace(/[-:T.]/g, "")
-    .slice(0, 14);
+  const yyyyMMddHHmmss =
+    now.getFullYear() +
+    "" +
+    (now.getMonth() + 1).toString().padStart(2, "0") +
+    "" +
+    now.getDate().toString().padStart(2, "0") +
+    "" +
+    now.getHours().toString().padStart(2, "0") +
+    "" +
+    now.getMinutes().toString().padStart(2, "0") +
+    "" +
+    now.getSeconds().toString().padStart(2, "0");
   return yyyyMMddHHmmss;
 }
 
@@ -26,29 +36,86 @@ function encryptSHA256(data) {
 
 router.get("/", (req, res) => {
   console.log("PG Sample page");
+
+  console.log(req.query.order_id);
+  console.log(req.query.amount);
+
+  // 주문 정보를 가지고 오기
+
   const ediDate = getyyyyMMddHHmmss();
-  const goodsAmt = "1004"; // 결제상품금액
+  const goodsAmt = req.query.amount; // 결제상품금액
   const encData = encryptSHA256(merchantID + ediDate + goodsAmt + merchantKey);
 
   console.log("encData : " + encData);
 
   res.render("pg", {
     merchantID,
-    goodsNm: "테스트상품",
+    goodsNm: "레드스위치",
     goodsAmt,
-    ordNm: "PGTEST",
+    ordNm: "레드스위치",
     ordTel: "01000000000",
-    ordEmail: "abcd@zxcv.com",
-    ordNo: "test1234567890",
-    returnUrl: "/payResultSample",
+    ordNo: req.query.order_id,
+    returnUrl: "/payment/payResult",
     ediDate,
     encData,
   });
 });
 
-router.post("/payResultSample", (req, res) => {
+router.post("/payResult", (req, res) => {
   // Handle the payment result here
-  res.send("Payment result received");
+  // window.location.href =
+  //   "http://localhost:3000/result?orderId=" + req.query.orderId;
+
+  // console.log(
+  //   'http://localhost:3000/result?data={"paidAt":"' +
+  //     getyyyyMMddHHmmss() +
+  //     '","resultCode":"0000","orderId":"' +
+  //     req.params.orderId +
+  //     '"}'
+  // );
+  // res.redirect(
+  //   'http://localhost:3000/result?data={"paidAt":"' +
+  //     getyyyyMMddHHmmss() +
+  //     '","resultCode":"0000","orderId":"' +
+  //     req.params.orderId +
+  //     '"}'
+  // );
+
+  // 결과를 받습니다.
+
+  // 건너받은 파라미터 -> 이걸 프론트에 search query로 보낸다.
+  // tid: 'DMGS00001m01012408141747250304',
+  // payMethod: 'CARD',
+  // ediDate: '20240814174723',
+  // goodsAmt: '15000',
+  // mid: 'DMGS00001m',
+  // ordNo: 'b5bf0a16',
+  // mbsReserved: 'MallReserved',
+  // charSet: 'UTF-8',
+  // signData:
+  // resultCode: '0000',
+  // resultMsg: 'Success'
+
+  console.log(req.body);
+
+  // 파이어베이스 문서에 저장하자
+  db.collection("PAYMENT")
+    .doc(req.body.ordNo)
+    .set(req.body, { merge: true })
+    .then(() => {
+      console.log("Document successfully written!");
+      res.redirect(
+        "http://localhost:3000/result?data={" +
+          '"paidAt":"' +
+          getyyyyMMddHHmmss() +
+          '","resultCode":"0000","orderId":"' +
+          req.body.ordNo +
+          '"}'
+      );
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 module.exports = router;

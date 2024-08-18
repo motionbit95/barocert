@@ -25,8 +25,13 @@
       function pay_result_close() {
         alert("결제를 취소하였습니다.");
       }
+
+      // 페이지가 로드된 후 1초 뒤에 doPaySubmit 호출
+      window.onload = function () {
+        setTimeout(doPaySubmit, 1000); // 1000ms = 1초
+      };
     </script>
-    <div style="text-align: center">
+    <div style="text-align: center" onload="doPaySubmit()">
       <div
         id="sampleInput"
         class="paypop_con"
@@ -74,12 +79,6 @@
             <tr>
               <td>구매자연락처</td>
               <td><input type="text" name="ordTel" value="<%= ordTel %>" /></td>
-            </tr>
-            <tr>
-              <td>구매자이메일</td>
-              <td>
-                <input type="text" name="ordEmail" value="<%= ordEmail %>" />
-              </td>
             </tr>
             <tr>
               <td>returnUrl</td>
