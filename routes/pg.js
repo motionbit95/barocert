@@ -102,24 +102,12 @@ router.post("/payResult", (req, res) => {
 
   // 승인을 요청합니다. - 현재 모든 카드사 승인 X - 9999 결제실패 에러 발생함.(주석)
   axios
-    .post(
-      "https://api.payster.co.kr/payment.do",
-      {
-        tid: req.body.tid,
-        ediDate: req.body.ediDate,
-        mid: req.body.mid,
-        goodsAmt: req.body.goodsAmt,
-        charSet: "utf-8",
-        encData: req.body.encData,
-        signData: req.body.signData,
+    .post("https://api.payster.co.kr/payment.do", req.body, {
+      headers: {
+        "Content-Type": "application/json",
+        Charset: "UTF-8",
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Charset: "UTF-8",
-        },
-      }
-    )
+    })
     .then((response) => {
       console.log("응답결과:", response.data);
 
