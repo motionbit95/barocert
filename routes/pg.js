@@ -56,7 +56,8 @@ router.get("/", (req, res) => {
     ordNm: "레드스위치",
     ordTel: "01000000000",
     ordNo: req.query.order_id,
-    returnUrl: "/payment/payResult",
+    returnUrl:
+      "https://port-0-barocert-lxwmkqxz2d25ae69.sel5.cloudtype.app/payment/payResult",
     ediDate,
     encData,
   });
@@ -129,7 +130,7 @@ router.post("/payResult", (req, res) => {
         .then(() => {
           console.log("Document successfully written!");
           res.redirect(
-            "http://localhost:3000/result?data={" +
+            "http://redswitch.kr/result?data={" +
               '"paidAt":"' +
               getyyyyMMddHHmmss() +
               '","resultCode":"0000","orderId":"' +
