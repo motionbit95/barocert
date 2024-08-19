@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const path = require("path");
 const firebase = require("./db");
+const { default: axios } = require("axios");
 const db = firebase.firestore();
 
 var router = express.Router();
@@ -98,20 +99,76 @@ router.post("/payResult", (req, res) => {
 
   console.log(req.body);
 
-  // 파이어베이스 문서에 저장하자
-  db.collection("PAYMENT")
-    .doc(req.body.ordNo)
-    .set(req.body, { merge: true })
-    .then(() => {
-      console.log("Document successfully written!");
-      res.redirect(
-        "http://localhost:3000/result?data={" +
-          '"paidAt":"' +
-          getyyyyMMddHHmmss() +
-          '","resultCode":"0000","orderId":"' +
-          req.body.ordNo +
-          '"}'
-      );
+  // 승인을 요청합니다. - 현재 모든 카드사 승인 X - 9999 결제실패 에러 발생함.(주석)
+  axios
+    .post(
+      "https://api.payster.co.kr/payment.do",
+      {
+        tid: req.body.tid,
+        ediDate: req.body.ediDate,
+        mid: req.body.mid,
+        goodsAmt: req.body.goodsAmt,
+        charSet: "utf-8",
+        encData: req.body.encData,
+        signData: req.body.signData,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Charset: "UTF-8",
+        },
+      }
+    )
+    .then((response) => {
+      console.log("응답결과:", response.data);
+
+      // 파이어베이스 문서에 저장하자
+      db.collection("PAYMENT")
+        .doc(req.body.ordNo)
+        .set({ ...req.body, ...response.data }, { merge: true })
+        .then(() => {
+          console.log("Document successfully written!");
+          res.redirect(
+            "http://localhost:3000/result?data={" +
+              '"paidAt":"' +
+              getyyyyMMddHHmmss() +
+              '","resultCode":"0000","orderId":"' +
+              req.body.ordNo +
+              '"}'
+          );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+
+router.post("/payCancel", (req, res) => {
+  axios
+    .post(
+      "https://api.payster.co.kr/payment.cancel",
+      {
+        tid: req.body.tid,
+        ordNo: req.body.ordNo,
+        canAmt: req.body.canAmt,
+        canMsg: "지점사정", // 취소사유
+        partCanFlg: "0",
+        encData: req.body.encData,
+        ediDate: req.body.ediDate,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Charset: "UTF-8",
+        },
+      }
+    )
+    .then((response) => {
+      console.log(response.data);
+      // 환불 결과를 저장합니다.
     })
     .catch((error) => {
       console.log(error);
