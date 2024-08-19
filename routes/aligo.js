@@ -243,6 +243,7 @@ const alimtalkSend = (req, res) => {
     receiver_1: req.body.receiver_1,
     recvname_1: req.body.recvname_1,
     subject_1: req.body.subject_1,
+    emtitle_1: req.body.emtitle_1,
     message_1: req.body.message_1,
     button_1: JSON.stringify(req.body.button_1),
   });
