@@ -11,9 +11,9 @@ const aligoapi = require("aligoapi");
 // https://www.npmjs.com/package/aligoapi
 
 var AuthData = {
-  apikey: "s95md32hj8rotnau6wqr40fgzabm9ze3",
+  apikey: "0muxj2oumbcdtxtqvvh9z838kes5mbci",
   // 이곳에 발급받으신 api key를 입력하세요
-  userid: "motionbit",
+  userid: "redswitch",
   // 이곳에 userid를 입력하세요
 };
 // 인증용 데이터는 모든 API 호출시 필수값입니다.
