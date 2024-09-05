@@ -116,11 +116,12 @@ router.post("/payResult", (req, res) => {
         },
       }
     )
-    .then((response) => {
-      console.log("응답결과:", response.data);
+    .then(async (response) => {
+      console.log("응답결과:", response.data, req.body.ordNo);
 
       // 파이어베이스 문서에 저장하자
-      db.collection("PAYMENT")
+      await db
+        .collection("PAYMENT")
         .doc(req.body.ordNo)
         .set({ ...req.body, ...response.data }, { merge: true })
         .then(() => {
@@ -144,6 +145,12 @@ router.post("/payResult", (req, res) => {
 });
 
 router.post("/payCancel", (req, res) => {
+  const encData = encryptSHA256(
+    merchantID + req.body.ediDate + req.body.canAmt + merchantKey
+  );
+
+  console.log(encData);
+
   axios
     .post(
       "https://api.payster.co.kr/payment.cancel",
@@ -153,7 +160,7 @@ router.post("/payCancel", (req, res) => {
         canAmt: req.body.canAmt,
         canMsg: "지점사정", // 취소사유
         partCanFlg: "0",
-        encData: req.body.encData,
+        encData: encData,
         ediDate: req.body.ediDate,
       },
       {
@@ -171,5 +178,18 @@ router.post("/payCancel", (req, res) => {
       console.log(error);
     });
 });
+
+// router.post("/test", async (req, res) => {
+//   await db
+//     .collection("PAYMENT")
+//     .doc("a96e9976")
+//     .set(
+//       {
+//         ...req.body,
+//       },
+//       { merge: true }
+//     )
+//     .then(() => res.send(200));
+// });
 
 module.exports = router;
