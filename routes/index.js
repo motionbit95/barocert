@@ -20,7 +20,6 @@ router.post("/sendEmail", async (req, res, next) => {
   // 계정 확인용 이메일을 전송합니다.
   const email = req.body.email;
   const content = req.body.content;
-  console.log(content);
 
   try {
     const mailOptions = {
@@ -28,7 +27,7 @@ router.post("/sendEmail", async (req, res, next) => {
       to: email,
       subject: "가맹점 신청",
       // html: content,
-      html: `<p>가맹점 신청 정보</p>
+      html: `<h1>가맹점 신청 정보</h1>
       <p>가맹점명 : ${content.shop_name}</p>
       <p>담당자 이름 : ${content.user_name}</p>
       <p>담당자 연락처 : ${content.user_tel}</p>
