@@ -100,14 +100,22 @@ router.post("/payResult", (req, res) => {
 
   console.log(req.body);
 
+  const encData = encryptSHA256(
+    merchantID + req.body.ediDate + req.body.goodsAmt + merchantKey
+  );
+
   // 승인을 요청합니다. - content-type 변경
   axios
-    .post("https://api.payster.co.kr/payment.do", req.body, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Charset: "UTF-8",
-      },
-    })
+    .post(
+      "https://api.payster.co.kr/payment.do",
+      { ...req.body, encData: encData },
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Charset: "UTF-8",
+        },
+      }
+    )
     .then((response) => {
       console.log("응답결과:", response.data);
 
