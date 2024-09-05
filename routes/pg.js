@@ -100,11 +100,11 @@ router.post("/payResult", (req, res) => {
 
   console.log(req.body);
 
-  // 승인을 요청합니다. - 현재 모든 카드사 승인 X - 9999 결제실패 에러 발생함.(주석)
+  // 승인을 요청합니다. - content-type 변경
   axios
     .post("https://api.payster.co.kr/payment.do", req.body, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         Charset: "UTF-8",
       },
     })
@@ -150,7 +150,7 @@ router.post("/payCancel", (req, res) => {
       },
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
           Charset: "UTF-8",
         },
       }
