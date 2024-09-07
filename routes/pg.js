@@ -123,18 +123,23 @@ router.post("/payResult", (req, res) => {
       await db
         .collection("PAYMENT")
         .doc(req.body.ordNo)
-        .set({ ...req.body, ...response.data }, { merge: true })
-        .then(() => {
-          console.log("Document successfully written!");
+        .set(
+          {
+            ...req.body,
+            ...response.data,
+          },
+          { merge: true }
+        )
+        .then(() =>
           res.redirect(
-            "http://redswitch.kr/result?data={" +
+            "https://redswitch.kr/result?data={" +
               '"paidAt":"' +
               getyyyyMMddHHmmss() +
               '","resultCode":"0000","orderId":"' +
               req.body.ordNo +
               '"}'
-          );
-        })
+          )
+        )
         .catch((error) => {
           console.log(error);
         });
@@ -173,6 +178,7 @@ router.post("/payCancel", (req, res) => {
     .then((response) => {
       console.log(response.data);
       // 환불 결과를 저장합니다.
+      res.send(response.data);
     })
     .catch((error) => {
       console.log(error);
