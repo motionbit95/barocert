@@ -120,41 +120,17 @@ router.post("/payResult", (req, res) => {
       console.log("응답결과:", response.data, req.body.ordNo);
 
       // 파이어베이스 문서에 저장하자
-      // await db
-      //   .collection("PAYMENT")
-      //   .doc(req.body.ordNo)
-      //   .set(
-      //     {
-      //       ...req.body,
-      //       ...response.data,
-      //     },
-      //     { merge: true }
-      //   )
-      //   .then(() =>
-      //     res.redirect(
-      //       "https://redswitch.kr/result?data={" +
-      //         '"paidAt":"' +
-      //         getyyyyMMddHHmmss() +
-      //         '","resultCode":"0000","orderId":"' +
-      //         req.body.ordNo +
-      //         '"}'
-      //     )
-      //   )
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-
-      axios
-        .post(
-          "https://port-0-barocert-lxwmkqxz2d25ae69.sel5.cloudtype.app/payment/sendResponse",
-          { ...req.body },
+      await db
+        .collection("PAYMENT")
+        .doc(req.body.ordNo)
+        .set(
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
+            ...req.body,
+            ...response.data,
+          },
+          { merge: true }
         )
-        .then(() => {
+        .then(() =>
           res.redirect(
             "https://redswitch.kr/result?data={" +
               '"paidAt":"' +
@@ -162,7 +138,10 @@ router.post("/payResult", (req, res) => {
               '","resultCode":"0000","orderId":"' +
               req.body.ordNo +
               '"}'
-          );
+          )
+        )
+        .catch((error) => {
+          console.log(error);
         });
     })
     .catch((error) => {
