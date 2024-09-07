@@ -120,17 +120,41 @@ router.post("/payResult", (req, res) => {
       console.log("응답결과:", response.data, req.body.ordNo);
 
       // 파이어베이스 문서에 저장하자
-      await db
-        .collection("PAYMENT")
-        .doc(req.body.ordNo)
-        .set(
+      // await db
+      //   .collection("PAYMENT")
+      //   .doc(req.body.ordNo)
+      //   .set(
+      //     {
+      //       ...req.body,
+      //       ...response.data,
+      //     },
+      //     { merge: true }
+      //   )
+      //   .then(() =>
+      //     res.redirect(
+      //       "https://redswitch.kr/result?data={" +
+      //         '"paidAt":"' +
+      //         getyyyyMMddHHmmss() +
+      //         '","resultCode":"0000","orderId":"' +
+      //         req.body.ordNo +
+      //         '"}'
+      //     )
+      //   )
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+
+      axios
+        .post(
+          "https://port-0-barocert-lxwmkqxz2d25ae69.sel5.cloudtype.app/payment/sendRespnse",
+          { ...req.body },
           {
-            ...req.body,
-            ...response.data,
-          },
-          { merge: true }
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         )
-        .then(() =>
+        .then(() => {
           res.redirect(
             "https://redswitch.kr/result?data={" +
               '"paidAt":"' +
@@ -138,10 +162,7 @@ router.post("/payResult", (req, res) => {
               '","resultCode":"0000","orderId":"' +
               req.body.ordNo +
               '"}'
-          )
-        )
-        .catch((error) => {
-          console.log(error);
+          );
         });
     })
     .catch((error) => {
@@ -185,17 +206,17 @@ router.post("/payCancel", (req, res) => {
     });
 });
 
-// router.post("/test", async (req, res) => {
-//   await db
-//     .collection("PAYMENT")
-//     .doc("a96e9976")
-//     .set(
-//       {
-//         ...req.body,
-//       },
-//       { merge: true }
-//     )
-//     .then(() => res.send(200));
-// });
+router.post("/sendRespnse", async (req, res) => {
+  await db
+    .collection("PAYMENT")
+    .doc("a96e9976")
+    .set(
+      {
+        ...req.body,
+      },
+      { merge: true }
+    )
+    .then(() => res.send(200));
+});
 
 module.exports = router;
