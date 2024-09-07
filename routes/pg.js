@@ -209,7 +209,7 @@ router.post("/payCancel", (req, res) => {
 router.post("/sendRespnse", async (req, res) => {
   await db
     .collection("PAYMENT")
-    .doc("a96e9976")
+    .doc(req.body.ordNo)
     .set(
       {
         ...req.body,
