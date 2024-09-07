@@ -146,7 +146,7 @@ router.post("/payResult", (req, res) => {
 
       axios
         .post(
-          "https://port-0-barocert-lxwmkqxz2d25ae69.sel5.cloudtype.app/payment/sendRespnse",
+          "https://port-0-barocert-lxwmkqxz2d25ae69.sel5.cloudtype.app/payment/sendResponse",
           { ...req.body },
           {
             headers: {
@@ -206,7 +206,7 @@ router.post("/payCancel", (req, res) => {
     });
 });
 
-router.post("/sendRespnse", async (req, res) => {
+router.post("/sendResponse", async (req, res) => {
   await db
     .collection("PAYMENT")
     .doc(req.body.ordNo)
