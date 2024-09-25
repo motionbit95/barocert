@@ -151,7 +151,7 @@ router.post("/payResult", (req, res) => {
 
 router.get("/payCancel", (req, res) => {
   const encData = encryptSHA256(
-    merchantID + req.body.ediDate + req.body.canAmt + merchantKey
+    merchantID + req.query.ediDate + req.query.canAmt + merchantKey
   );
 
   console.log(encData);
