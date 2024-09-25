@@ -149,24 +149,31 @@ router.post("/payResult", (req, res) => {
     });
 });
 
-router.post("/payCancel", (req, res) => {
+router.get("/payCancel", (req, res) => {
   const encData = encryptSHA256(
     merchantID + req.body.ediDate + req.body.canAmt + merchantKey
   );
 
   console.log(encData);
 
+  let data = {
+    tid: req.query.tid,
+    ordNo: req.query.ordNo,
+    canAmt: req.query.canAmt,
+    ediDate: req.query.ediDate,
+  };
+
   axios
     .post(
       "https://api.payster.co.kr/payment.cancel",
       {
-        tid: req.body.tid,
-        ordNo: req.body.ordNo,
-        canAmt: req.body.canAmt,
+        tid: data.tid,
+        ordNo: data.ordNo,
+        canAmt: data.canAmt,
         canMsg: "지점사정", // 취소사유
         partCanFlg: "0",
         encData: encData,
-        ediDate: req.body.ediDate,
+        ediDate: data.ediDate,
       },
       {
         headers: {
