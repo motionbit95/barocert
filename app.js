@@ -15,6 +15,7 @@ var navercert = require("./routes/navercert");
 var passcert = require("./routes/passcert");
 var pg = require("./routes/pg");
 var aligo = require("./routes/aligo");
+var api = require("./routes/admin");
 
 var app = express();
 app.use(cors());
@@ -39,6 +40,7 @@ app.use("/NavercertService", navercert);
 app.use("/PasscertService", passcert);
 app.use("/payment", pg);
 app.use("/aligo", aligo);
+app.use("/api", api);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
