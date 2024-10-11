@@ -11,8 +11,8 @@ router.get("/", function (req, res, next) {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "motionbit.dev@gmail.com",
-    pass: "ctwb eqcs oekk pnix",
+    user: "redswitch.help@gmail.com",
+    pass: "enzy tjvb xfhv xors",
   },
 });
 
